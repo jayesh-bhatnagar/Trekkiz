@@ -25,12 +25,12 @@ A simple Flask based web-application for Trek-Management, developed as a part of
 
 ## 🧑🏻‍💻 Tech Stack
 
-* **1. Python**
-* **2. Flask**
-* **3. SQLAlchemy**
-* **4. Jinja2**
-* **5. Bootstrap 5**
-* **6. HTML and CSS**
+*  **Python**
+*  **Flask**
+*  **SQLAlchemy**
+*  **Jinja2**
+*  **Bootstrap 5**
+*  **HTML and CSS**
 
 ---
 
@@ -69,13 +69,13 @@ source .venv/Scripts/activate
 .\.venv\Scripts\activate.ps1
 ```
 
-### 3. Install Dependencies
+### 4. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Run the application
+### 5. Run the application
 
 ```bash
 python app.py
