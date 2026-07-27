@@ -3,18 +3,18 @@ A simple Flask based web-application for Trek-Management, developed as a part of
 
 ## ✨ Features
 
-### Administrators
+### 1. Administrators
 * Create new Treks and edit them. Assign guides to the Treks.
 * Approve or Reject the registration of staff-members.
 * Blacklist / Unblacklist staff-members and users (trekkers).
 * Can view all the bookings, registered users and trek-staff.
 
-### Staff-Members (Guides)
+### 2. Staff-Members (Guides)
 * Manage the assigned treks.
 * View assigned treks.
 * View participants for an assigned trek.
 
-### Users (Trekkers)
+### 3. Users (Trekkers)
 * Self-register without needing the approval of administrators.
 * Book and search for treks.
 * View their bookings.
@@ -23,24 +23,24 @@ A simple Flask based web-application for Trek-Management, developed as a part of
 
 ---
 
-## Tech Stack
+## 🧑🏻‍💻 Tech Stack
 
-* **Python**
-* **Flask**
-* **SQLAlchemy**
-* **Jinja2**
-* **Bootstrap 5**
-* **HTML and CSS**
+* **1. Python**
+* **2. Flask**
+* **3. SQLAlchemy**
+* **4. Jinja2**
+* **5. Bootstrap 5**
+* **6. HTML and CSS**
 
 ---
 
-## Getting Started
+## 🚗 Getting Started
 
 ### 1. Clone the repository
 
 ```bash
 git clone <repository-url>
-cd Trek_Management
+cd Trek-Management
 ```
 
 ### 2. Create a virtual environment.
@@ -49,13 +49,23 @@ cd Trek_Management
 
 ```bash
 python -m venv .venv
-source .venv/Scripts/activate
 ```
 
 **Windows**
 
 ```bash
 python -m venv .venv
+```
+
+### 3. Activating the virtual environment
+
+**Linux / macOS**
+```bash
+source .venv/Scripts/activate
+```
+
+**Windows**
+```bash
 .\.venv\Scripts\activate.ps1
 ```
 
