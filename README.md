@@ -109,9 +109,7 @@ http://127.0.01:5000
 
 ---
 
-## About
-
-This project is created for **MAD-I project for May 2026 term**. This project helped me gain knowledge on Role-Based Access Control (RBAC), authentication, CRUD operations, and database relationships.
+## 🔗 Links
 
 Link to access project report: 
 Link to access video report: 
