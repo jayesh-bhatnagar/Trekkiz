@@ -42,9 +42,9 @@ A simple Flask based web-application for Trek-Management, developed as a part of
 ├── requirements.txt
 ├── routes.py
 ├── static
-│   ├── css
-│   └── images
-└── templates
+│   ├── css/
+│   └── images/
+└── templates/
 ```
 
 ---
