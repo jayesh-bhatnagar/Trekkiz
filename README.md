@@ -34,6 +34,21 @@ A simple Flask based web-application for Trek-Management, developed as a part of
 
 ---
 
+## 📂 Folder Structure
+```text 
+├── app.py
+├── helpers.py
+├── models.py
+├── requirements.txt
+├── routes.py
+├── static
+│   ├── css
+│   └── images
+└── templates
+```
+
+---
+
 ## 🚗 Getting Started
 
 ### 1. Clone the repository
