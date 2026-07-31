@@ -62,13 +62,7 @@ cd Trek-Management
 
 ### 2. Create a virtual environment.
 
-**Linux / macOS**
-
-```bash
-python -m venv .venv
-```
-
-**Windows**
+**Linux / macOS or Windows**
 
 ```bash
 python -m venv .venv
