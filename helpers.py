@@ -4,8 +4,9 @@ from flask import session
 def create_admin():
 
     if not User.query.filter_by(role = 'admin').first():
+        contact = '+91 12345 67890'.replace(' ', '')
         admin = User(role = 'admin', user_name = 'trek-admin', status = 'Approved',
-                      f_name = 'Administrator', isBlackListed = False)
+                      f_name = 'Administrator', isBlackListed = False, phone_number = contact)
         admin.set_password('123456')
         db.session.add(admin)
         db.session.commit()
