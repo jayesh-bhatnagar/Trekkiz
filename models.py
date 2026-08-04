@@ -15,7 +15,10 @@ class User(db.Model):
     status = db.Column(db.String, default = 'Pending')
     password = db.Column(db.String, nullable = False)
     phone_number = db.Column(db.String, unique = True, nullable = False) 
-    isBlackListed =db.Column(db.Boolean, default = False)
+    isBlackListed = db.Column(db.Boolean, default = False)
+
+    guided_treks = db.relationship('Trek', backpopulates = 'guide')
+    bookings = db.relationship('Booking', backpopulates = 'trekker')
 
     def set_password(self, raw_password):
         self.password = generate_password_hash(raw_password)
@@ -37,3 +40,18 @@ class Trek(db.Model):
     total_slots = db.Column(db.Integer, nullable = False)
     available_slots = db.Column(db.Integer, nullable = True)
     trek_status = db.Column(db.String, nullable = False, default = 'Pending')
+
+    guide = db.relationship('User', backpopulates = 'guided_treks')
+    bookings = db.relationship('Booking', backpopulates = 'trek')
+
+class Booking(db.Model):
+
+    __tablename__ = 'bookings'
+    booking_id = db.Column(db.Integer, primary_key = True, autonincrement = True)
+    booking_date = db.Column(db.DateTime, default = datetime.now)
+    trek_id = db.Column(db.Integer, db.ForeignKey('treks.trek_id'), nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable = False)
+    status = db.Column(db.String, default = 'Pending')
+
+    trek = db.relationship('Trek', backpopulates = 'bookings')
+    trekker = db.relationship('User', backpopulates = 'bookings')
