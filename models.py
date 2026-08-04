@@ -17,8 +17,8 @@ class User(db.Model):
     phone_number = db.Column(db.String, unique = True, nullable = False) 
     isBlackListed = db.Column(db.Boolean, default = False)
 
-    guided_treks = db.relationship('Trek', backpopulates = 'guide')
-    bookings = db.relationship('Booking', backpopulates = 'trekker')
+    guided_treks = db.relationship('Trek', back_populates = 'guide')
+    bookings = db.relationship('Booking', back_populates = 'trekker')
 
     def set_password(self, raw_password):
         self.password = generate_password_hash(raw_password)
@@ -29,7 +29,7 @@ class User(db.Model):
 class Trek(db.Model):
 
     __tablename__ = 'treks'
-    trek_id = db.Column(db.Integer, primary_key = True, autonincrement = True)
+    trek_id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     trek_name = db.Column(db.String, nullable = False)
     location = db.Column(db.String, nullable = False)
     start_date = db.Column(db.DateTime, default = datetime.now)
@@ -41,17 +41,17 @@ class Trek(db.Model):
     available_slots = db.Column(db.Integer, nullable = True)
     trek_status = db.Column(db.String, nullable = False, default = 'Pending')
 
-    guide = db.relationship('User', backpopulates = 'guided_treks')
-    bookings = db.relationship('Booking', backpopulates = 'trek')
+    guide = db.relationship('User', back_populates = 'guided_treks')
+    bookings = db.relationship('Booking', back_populates = 'trek')
 
 class Booking(db.Model):
 
     __tablename__ = 'bookings'
-    booking_id = db.Column(db.Integer, primary_key = True, autonincrement = True)
+    booking_id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     booking_date = db.Column(db.DateTime, default = datetime.now)
     trek_id = db.Column(db.Integer, db.ForeignKey('treks.trek_id'), nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable = False)
     status = db.Column(db.String, default = 'Pending')
 
-    trek = db.relationship('Trek', backpopulates = 'bookings')
-    trekker = db.relationship('User', backpopulates = 'bookings')
+    trek = db.relationship('Trek', back_populates = 'bookings')
+    trekker = db.relationship('User', back_populates = 'bookings')
