@@ -1,5 +1,5 @@
 # 📍 Trekkiz
-A simple Flask based web-application for Trek-Management, developed as a part of **MAD-I project for May 2026 term**. The web-app provides different interfaces for administrators, staff-members (guides), and the users (trekkers) to make the Trek management process easier.
+A simple Flask based web-application for Trek-Management, developed as a part of . The web-app provides different interfaces for administrators, staff-members (guides), and the users (trekkers) to make the Trek management process easier.
 
 ---
 
