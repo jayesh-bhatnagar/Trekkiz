@@ -15,5 +15,5 @@ def logged_in():
 
     user_id = session.get('user_id')
     if user_id:
-        return User.query.get_or_404(user_id)
+        return User.query.get(user_id)
     return None
