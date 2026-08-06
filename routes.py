@@ -22,7 +22,7 @@ def logout():
 def success():
 
     ''' This is the Registration success route. '''
-    return render_template('success.html')
+    return render_template('auth-success.html')
 
 @app.route('/signup', methods = ['GET', 'POST'])
 def register():
@@ -80,15 +80,29 @@ def login():
         session['user_id'] = user.user_id
         session['role'] = user.role
 
-        # if session.get('role') == 'staff':
-        #     if user.status != 'Approved':
-        #         return render_template('error.html', user = user)
-        #     else:
-        #         return redirect(url_for('staff_dash'))
-        # elif session.get('role') == 'trekker':
-        #     return redirect(url_for('trekker_dash'))
-        # else:
-        #     return redirect(url_for('admin_dash'))
+        if session.get('role') == 'staff':
+            if user.status != 'Approved':
+                return render_template('auth-error.html', user = user)
+            else:
+                return redirect(url_for('staff_dash'))
+        elif session.get('role') == 'trekker':
+            return redirect(url_for('trekker_dash'))
+        else:
+            return redirect(url_for('admin_dash'))
 
     return render_template('signin.html')
 
+@app.route('/admin-dash', methods = ['GET', 'POST'])
+def admin_dash():
+    admin = logged_in()
+    return render_template('dash-base.html', user = admin)
+
+@app.route('/staff-dash', methods = ['GET', 'POST'])
+def staff_dash():
+    guide = logged_in()
+    return render_template('dash-base.html', user = guide)
+
+@app.route('/trekker-dash', methods = ['GET', 'POST'])
+def trekker_dash():
+    trekker = logged_in()
+    return render_template('dash-base.html', user = trekker)
