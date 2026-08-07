@@ -1,0 +1,42 @@
+.custom-background{
+    background-color: rgb(235, 237, 168);
+    background-image: url('/static/images/background.avif');
+    background-size: 1400px 1200px;
+}
+
+.error{
+    color: rgb(164, 50, 50);
+}
+
+.trek-link{
+    text-decoration-line: none;
+    color: rgb(2, 105, 68);
+}
+
+.btn-custom{
+    border: none;
+    background-color: rgba(179, 235, 218, 0.992);
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: x-large;
+    color: rgb(2, 105, 68);
+    padding: 2px 8px;
+}
+
+.btn-custom:hover{
+    background-color: rgb(235, 237, 168);
+}
+
+.form-btn-custom{
+    border: none;
+    background-color: rgba(179, 235, 218, 0.992);
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: large;
+    color: rgb(2, 105, 68);
+    padding: 2px 8px;
+}
+
+.form-btn-custom:hover{
+    background-color: rgb(235, 237, 168);
+}
