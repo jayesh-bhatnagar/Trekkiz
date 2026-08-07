@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% include 'head.html' %}
+    <title>{% block title %}{% endblock %}</title>
+  </head>
+  <body class="custom-background">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a href="/" class="trek-link mx-auto">
+          <h1 style="font-size: 50px">Trekkiz</h1>
+        </a>
+      </div>
+    </nav>
+    <div class="d-flex container-fluid justify-content-center align-items-center">
+      <div class="card text-center" style="border-radius: 10px; max-width: 500px; 
+          min-height: 400px; background-color: rgba(216, 241, 234, 0.606);">
+        <div class="card-body p-4 p-md-5">
+          {% block content %} {% endblock %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

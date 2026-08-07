@@ -1,0 +1,49 @@
+{% extends 'auth-base.html' %}
+{% block title %} Registration | Trekkiz {%endblock %} 
+{% block content %}
+<h2 class="card-title" style="color: rgb(2, 105, 68)">Register</h2>
+<div style="text-align: center">
+  <div class="mt-3">
+    {% with messages = get_flashed_messages(with_categories = true) %} 
+      {% for category, message in messages %}
+        <h5 class="{{ category }}">{{ message }}</h5>
+      {% endfor %} 
+    {% endwith %}
+  </div>
+  <div>
+    <form action="{{ url_for('register') }}" method="POST">
+      <div class="mt-2">
+        <select name="role" class="form-select" required>
+          <option value selected disabled>-- Choose Your Role --</option>
+          <option value="trekker">User (Trekker)</option>
+          <option value="staff">Trek Staff</option>
+        </select>
+      </div>
+      <div class="mt-3">
+        <input type="text" name="f_name" class="form-control" placeholder="First Name" required />
+      </div>
+      <div class="mt-3">
+        <input type="text" name="l_name" class="form-control" placeholder="Last Name"/>
+      </div>
+      <div class="mt-3">
+        <input type="text" name="contact" class="form-control" placeholder="Phone Number" required/>
+      </div>
+      <div class="mt-3">
+        <input type="text" name="u_name" class="form-control" placeholder="User name" required />
+      </div>
+      <div class="mt-3">
+        <input type="password" placeholder="Password" name="raw_password" class="form-control" required/>
+      </div>
+      <div class="mt-3 mb-3">
+        <button type="submit" class="form-btn-custom">Register</button>
+      </div>
+    </form>
+  </div>
+  <div>
+    <h6>
+      Already have an account?
+      <a href="{{ url_for('login') }}" class="trek-link">Signin here</a>
+    </h6>
+  </div>
+</div>
+{% endblock %}

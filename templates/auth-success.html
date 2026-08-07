@@ -1,0 +1,12 @@
+{% extends 'auth-base.html' %}
+{% block title %} Successfully Registered {% endblock %}
+{% block content %}
+<div style = 'text-align: center;'>
+    <h2>
+        Yayy!! You have registered successfully !!
+    </h2>
+    <h5 class = 'mt-4'>
+        You can now login to your account<a href = "{{ url_for('login') }}" class = 'trek-link'> here </a> 
+    </h5>
+</div>
+{% endblock %}

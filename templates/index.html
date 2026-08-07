@@ -1,0 +1,21 @@
+{% extends 'auth-base.html' %}
+{% block title %} Home | Trekkiz {% endblock %}
+{% block content %}
+
+<h2 class="card-title" style="color: rgb(2, 105, 68)">Welcome to Trekkiz</h2>
+<br />
+<h3 class="mb-2 text-body-primary">
+  Begin your journey into the beautiful world of mountains, hills and valleys.
+</h3>
+<br />
+<br />
+<div class="d-flex justify-content-center gap-3 mt-4">
+  <button class="btn-custom px-4">
+    <a href="{{ url_for('login') }}" class="trek-link"> Sign-in </a>
+  </button>
+  <button class="btn-custom px-4">
+    <a href="{{ url_for('register') }}" class="trek-link"> Register </a>
+  </button>
+</div>
+
+{% endblock %}

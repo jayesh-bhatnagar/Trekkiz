@@ -1,0 +1,12 @@
+{% extends 'auth-base.html' %}
+{% block title %} Authentication Error {% endblock %}
+{% block content %}
+<div style = 'text-align: center;'>
+	<div>
+		<h2> You were not able to login because your status is {{ user.status }} </h2>
+		<h5 class = 'mt-4'>
+			Try logging in <a href = "{{ url_for('login') }}" class = 'trek-link'> here </a>after some time 
+		</h5>
+	</div>
+</div>
+{% endblock%}
