@@ -1,19 +1,20 @@
-.custom-background{
-    background-color: rgb(235, 237, 168);
-    background-image: url('/static/images/background.avif');
-    background-size: 1400px 1200px;
+.custom-background {
+  background-color: rgb(235, 237, 168);
+  background-image: url("/static/images/background.avif");
+  background-size: 1400px 1200px;
 }
 
-.error{
-    color: rgb(164, 50, 50);
+.error {
+  color: rgb(164, 50, 50);
 }
 
-.trek-link{
-    text-decoration-line: none;
-    color: rgb(2, 105, 68);
+.trek-link,
+.navbar-brand {
+  text-decoration-line: none;
+  color: rgb(2, 105, 68);
 }
 
-.btn-custom{
+.btn-custom {
     border: none;
     background-color: rgba(179, 235, 218, 0.992);
     border-radius: 6px;
@@ -23,11 +24,7 @@
     padding: 2px 8px;
 }
 
-.btn-custom:hover{
-    background-color: rgb(235, 237, 168);
-}
-
-.form-btn-custom{
+.form-btn-custom {
     border: none;
     background-color: rgba(179, 235, 218, 0.992);
     border-radius: 6px;
@@ -37,6 +34,27 @@
     padding: 2px 8px;
 }
 
-.form-btn-custom:hover{
-    background-color: rgb(235, 237, 168);
+.btn-custom:hover,
+.form-btn-custom:hover {
+  background-color: rgb(235, 237, 168);
+}
+
+.nav-link {
+    font-size: 1.10rem;
+    border-radius: 8px;
+    color: rgb(2, 105, 68);
+}
+
+.nav-link i{
+    font-size: 1.25rem;
+}
+.nav-link:hover {
+  background-color: #b7ece2;
+  color: rgb(2, 105, 68);
+}
+
+.sidebar {
+  background-color: rgba(201, 247, 232, 0.877);
+  width: 240px;
+  flex-shrink: 0;
 }
