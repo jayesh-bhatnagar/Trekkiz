@@ -4,15 +4,22 @@
     {% include 'head.html' %}
     <title>{% block title %}{% endblock %}</title>
   </head>
-  <body style="background-color: #e8f3ea">
+  <body style="background-color: rgba(209, 249, 218, 0.686)">
     <div class="d-flex vh-100 overflow-hidden">
       {% include 'sidebar.html' %}
       <div class="flex-grow-1 d-flex flex-column w-100">
         <header class="bg-white border-bottom px-4 py-3 w-100">
           <div class="d-flex justify-content-between align-items-center w-100">
-            <a class="navbar-brand fw-bold fs-3 text-success mb-0" href="#">Trekkiz</a>
+            <a class="navbar-brand fw-bold fs-3 text-success align-items-center" href="#">Trekkiz</a>
             {% block search_bar %}
             {% endblock %}
+            <button class="btn btn-light btn-sm d-flex align-items-center gap-2">
+                <span class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 30px; height: 30px; font-size: 0.8rem; font-weight: 600;">
+                {{ user.f_name[0].upper() }}
+              </span>
+              {{ user.f_name }}
+            </button>
           </div>
         </header>
         <main class="p-4 flex-grow-1">
