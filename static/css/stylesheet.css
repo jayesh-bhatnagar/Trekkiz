@@ -53,6 +53,11 @@
   color: rgb(2, 105, 68);
 }
 
+.nav-link.active-link {
+  color: rgb(2, 105, 68) ; 
+  background-color: #ffffff ; 
+}
+
 .sidebar {
   background-color: rgba(201, 247, 232, 0.877);
   width: 240px;
