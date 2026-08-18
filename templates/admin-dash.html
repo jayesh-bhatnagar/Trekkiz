@@ -1,0 +1,171 @@
+{% extends 'dash-base.html' %} 
+{% block title %}Admin Dashboard | Trekkiz{% endblock %} 
+{% block brand_name %}
+  <a class="navbar-brand fw-bold fs-3 text-success align-items-center" 
+  href="{{ url_for('admin_dash') }}">Trekkiz</a>
+{% endblock %}
+{% block search_bar %}
+<form action="" method="GET" class="d-flex align-items-center gap-2" role="search">
+  <input class="form-control" type="search" placeholder="Search Treks, Staff Members or Trekkers ..." 
+  name="query" style="width: 350px;" value="{{ request.args.get('query', '') }}"/>
+  <button class="btn btn-success" type="submit">Search</button>
+</form>
+{% endblock %} 
+{% block content %}
+<h3 style="font-weight: 700; color: #0f5a37" class="mb-3">
+  Welcome, {{ user.f_name }}
+</h3>
+<div class="row g-4 mb-4">
+  <div class="col-md-3">
+    <div class="card stats-card bg-white text-center p-4">
+      <h6 style="font-weight: 700">
+        <i class="bi bi-geo-alt-fill"></i>  Total Treks</h6>
+      <h2>{{ treks | length }}</h2>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stats-card bg-white text-center p-4">
+      <h6 style="font-weight: 700"><i class="bi bi-people-fill"></i>  Trek Guides</h6>
+      <h2>{{ guides | length }}</h2>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stats-card bg-white text-center p-4">
+      <h6 style="font-weight: 700"><i class="bi bi-person-fill"></i>  Registered Trekkers</h6>
+      <h2>{{ trekkers | length }}</h2>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stats-card bg-white text-center p-4">
+      <h6 style="font-weight: 700"><i class="bi bi-calendar-event"></i>  Total Bookings</h6>
+      <h2>{{ bookings | length }}</h2>
+    </div>
+  </div>
+</div>
+<div class="row g-4">
+  <div class="col-12 col-xl-6 p-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white py-3 border-0 d-flex justify-content-between 
+        align-items-center">
+        <h5 class="card-title fw-bold mb-0" style="color: #157649;">
+          Pending Staff Approvals
+        </h5>
+        <span class="badge text-bg-light fs-6 rounded-pill fw-semibold px-3 py-2">
+          {{ requests }} Requests
+        </span>
+      </div>
+      <div class="card-body p-0">
+        {% if pending_staff %}
+        
+        <table class="table tabel-hover" style="text-align: center;">
+          <thead class="table-light border-top-0">
+            <tr>
+              <th>Staff Details</th>
+              <th>Contact</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for staff in pending_staff %}
+            <tr>
+              <td>
+                <div class="fw-semibold text-dark">
+                  {{ staff.f_name }} {{ staff.l_name }}
+                </div>
+              </td>
+              <td>
+                <small class="font-monospace text-secondary">
+                  {{ staff.phone_number }}</small>
+              </td>
+              <td class="text-end pe-3">
+                <form action="{{ url_for('approve_staff', staff_id = staff.user_id) }}"
+                  method="POST" class="d-inline-block">
+                  <input type="hidden" name="staff_id" value="{{ staff.user_id }}"/>
+                  <button type="submit" name="action" value="approve_staff"
+                    class="btn btn-sm btn-success px-2 py-1 me-1">
+                    Approve
+                  </button>
+                </form>
+                <form action="#"
+                  method="POST" class="d-inline-block">
+                  <input type="hidden" name="staff_id" value="{{ staff.user_id }}"/>
+                  <button type="submit" name="action" value="reject_staff"
+                    class="btn btn-sm btn-danger px-2 py-1">
+                    Reject
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="text-center py-5">
+          <p class="text-muted mb-0">
+            All clear! No pending registration requests at this time.
+          </p>
+        </div>
+        {% endif %}
+      </div>
+      <div class="card-footer bg-white text-end">
+        <h6><a href="#" class="trek-link">View All Staff →</a></h6>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-xl-6 p-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0 fw-bold" style="color: #157649;">Active Trek Catalogue</h5>
+        <a href="#" role="button">
+          <button class="btn btn-medium btn-outline-success">Create New Treks</button>
+        </a>
+      </div>
+      <div class="card-body p-0">
+        {% if all_treks %}
+        <table class="table table-hover align-middle mb-0" style = 'text-align: center;'>
+          <thead class="table-light border-top-0">
+            <tr>
+              <th>Trek Title</th>
+              <th>Difficulty</th>
+              <th>Slots Available</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for trek in all_treks %}
+              <tr>
+                <td>
+                  <div class="fw-semibold text-dark">{{ trek.trek_name }}</div>
+                </td>
+                <td>
+                  <span class="badge {% if trek.difficulty == 'Easy' %}bg-info text-white
+                  {% elif trek.difficulty == 'Medium' %}bg-warning text-dark{% else %}bg-danger
+                  {% endif %}">
+                    {{ trek.difficulty }}
+                  </span>
+                </td>
+                <td><span class="fw-bold">{{ trek.available_slots or 'N/A' }}</span> left</td>
+                <td>
+                  <span class="badge {% if trek.trek_status == 'Open' %}bg-success text-white
+                  {% elif trek.trek_status == 'Closed' %}bg-warning text-dark
+                  {% elif trek.trek_status == 'Started' %}bg-primary text-white{% else %}bg-danger
+                  {% endif %}">
+                    {{ trek.trek_status or 'Open' }}</span>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="text-center py-5">
+            <p class="text-muted mb-0">No treks have been added yet.</p>
+        </div>
+        {% endif %}
+        <div class="card-footer bg-white text-end">
+            <h6><a href="#" class="trek-link">View All Treks →</a></h6>
+        </div>                    
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
