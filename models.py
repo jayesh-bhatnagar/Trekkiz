@@ -30,7 +30,7 @@ class Trek(db.Model):
 
     __tablename__ = 'treks'
     trek_id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    trek_name = db.Column(db.String, nullable = False)
+    name = db.Column(db.String, nullable = False)
     location = db.Column(db.String, nullable = False)
     start_date = db.Column(db.DateTime, default = datetime.now)
     end_date = db.Column(db.DateTime, default = datetime.now)
@@ -39,7 +39,7 @@ class Trek(db.Model):
     guide_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable = True)
     total_slots = db.Column(db.Integer, nullable = False)
     available_slots = db.Column(db.Integer, nullable = True)
-    trek_status = db.Column(db.String, nullable = False, default = 'Pending')
+    status = db.Column(db.String, nullable = False, default = 'Pending')
 
     guide = db.relationship('User', back_populates = 'guided_treks')
     bookings = db.relationship('Booking', back_populates = 'trek')
