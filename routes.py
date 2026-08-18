@@ -156,8 +156,8 @@ def unblacklist(user_id):
     user = User.query.get(user_id)
     user.status = 'Approved'
     user.isBlackListed = False
-    db.session.commit(url_for('admin_dash'))
-
+    db.session.commit()
+    return redirect(url_for('admin_dash'))
     
 
 @app.route('/staff-dash', methods = ['GET', 'POST'])
