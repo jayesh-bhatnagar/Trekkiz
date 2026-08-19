@@ -5,13 +5,141 @@
   href="{{ url_for('admin_dash') }}">Trekkiz</a>
 {% endblock %}
 {% block search_bar %}
-<form action="" method="GET" class="d-flex align-items-center gap-2" role="search">
+<form action="{{ url_for('admin_dash') }}" method="GET" class="d-flex align-items-center gap-2" role="search">
   <input class="form-control" type="search" placeholder="Search Treks, Staff Members or Trekkers ..." 
   name="query" style="width: 350px;" value="{{ request.args.get('query', '') }}"/>
   <button class="btn btn-success" type="submit">Search</button>
 </form>
 {% endblock %} 
 {% block content %}
+{% if query %}
+
+  <!-- div tag for Search Results-->
+  <div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="fw-bold text-dark mb-0">
+        Search Results for "<span class="text-success">{{ query }}</span>"
+      </h4>
+      <a href="{{ url_for('admin_dash') }}" class="btn btn-sm btn-outline-secondary">
+        Clear Search
+      </a>
+    </div>
+
+    <!-- If No Results Found -->
+    {% if not treks_found and not users_found %}
+      <div class="card p-4 text-center border-0 shadow-sm bg-white rounded-3">
+        <p class="text-muted mb-0">No matching treks or users found.</p>
+      </div>
+    {% endif %}
+
+    <!-- Matching Treks Table -->
+    {% if treks_found %}
+      <div class="card border-0 shadow-sm rounded-3 mb-3">
+        <div class="card-header bg-white py-3 border-0">
+          <h5 class="fw-bold mb-0 text-dark">Treks ({{ treks_found | length }})</h5>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Trek Name</th>
+                <th>Location</th>
+                <th>Difficulty</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for trek in treks_found %}
+                <tr>
+                  <td>{{ trek.name }}</td>
+                  <td>{{ trek.location }}</td>
+                  <td>{{ trek.difficulty }}</td>
+                  <td>{{ trek.status }}</td>
+                  <td>
+                    <form action="#"
+                      method="POST" class="d-inline-block">
+                      <input type="hidden" name="trek_id" value="{{ trek.trek_id }}"/>
+                      <button type="submit" name="action" value="edit_trek" class="btn btn-sm btn-outline-primary">
+                        Edit
+                      </button>
+                    </form>
+                    <form action="#"
+                      method="POST" class="d-inline-block">
+                      <input type="hidden" name="trek_id" value="{{ trek.trek_id }}"/>
+                      <button type="submit" name="action" value="delete_trek" class="btn btn-sm btn-outline-danger">
+                        Delete
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Matching Staff Table -->
+    {% if users_found %}
+      <div class="card border-0 shadow-sm rounded-3 mb-3">
+        <div class="card-header bg-white py-3 border-0">
+          <h5 class="fw-bold mb-0 text-dark">Users found ({{ users_found | length }})</h5>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>User-Name</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Role</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in users_found %}
+                <tr>
+                  <td>{{ user.user_name }}</td>
+                  <td>{{ user.f_name }} {{ user.l_name }}</td>
+                  <td>{{ user.phone_number }}</td>
+                  <td>{{ user.role }}</td>
+                  <td>
+                    <form action="{{ url_for('approve_staff', staff_id = user.user_id) }}"
+                      method="POST" class="d-inline-block">
+                      <input type="hidden" name="staff_id" value="{{ user.user_id }}"/>
+                      <button type="submit" name="action" value="approve_staff" class="btn btn-sm btn-outline-success 
+                        {% if user.status == 'Approved' or user.status == 'Blacklisted' %}">
+                        Approve
+                      </button>
+                    </form>
+                    {% if not user.isBlackListed %}
+                      <form action="{{ url_for('blacklist', user_id = user.user_id) }}"
+                        method="POST", class="d-inline-block">
+                        <input type="hidden" name="user_id" value="{{ user.user_id }}">
+                        <button type="submit" name="action" value="blacklist" class="btn btn-sm btn-outline-danger">
+                          Blacklist
+                        </button>
+                      </form>
+                    {% else %}
+                      <form action="{{ url_for('unblacklist', user_id = user.user_id) }}" 
+                        method="POST" class="d-inline-block">
+                        <input type="hidden" name="user_id" value="{{ user.user_id }}">
+                        <button type="submit" name="action" value="Un-Blacklist" class="btn btn-sm btn-outline-info">
+                          Un-Blacklist
+                        </button>
+                      </form>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
 <h3 style="font-weight: 700; color: #0f5a37" class="mb-3">
   Welcome, {{ user.f_name }}
 </h3>
@@ -86,7 +214,7 @@
                     Approve
                   </button>
                 </form>
-                <form action="#"
+                <form action="{{ url_for('reject_staff', staff_id = staff.user_id) }}"
                   method="POST" class="d-inline-block">
                   <input type="hidden" name="staff_id" value="{{ staff.user_id }}"/>
                   <button type="submit" name="action" value="reject_staff"
@@ -135,7 +263,7 @@
             {% for trek in treks %}
               <tr>
                 <td>
-                  <div class="fw-semibold text-dark">{{ trek.trek_name }}</div>
+                  <div class="fw-semibold text-dark">{{ trek.name }}</div>
                 </td>
                 <td>
                   <span class="badge {% if trek.difficulty == 'Easy' %}bg-info text-white
@@ -150,7 +278,7 @@
                   {% elif trek.trek_status == 'Closed' %}bg-warning text-dark
                   {% elif trek.trek_status == 'Started' %}bg-primary text-white{% else %}bg-danger
                   {% endif %}">
-                    {{ trek.trek_status or 'Open' }}</span>
+                    {{ trek.status or 'Open' }}</span>
                 </td>
               </tr>
             {% endfor %}
