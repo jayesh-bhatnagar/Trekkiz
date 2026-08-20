@@ -65,7 +65,7 @@ def login():
     if request.method == 'POST':
         session.clear()
         user_name = request.form.get('u_name').strip()
-        password = request.form.get('password').strip()
+        password = request.form.get('password')
 
         user = User.query.filter_by(user_name = user_name).first()
 
@@ -91,8 +91,10 @@ def login():
 
     return render_template('signin.html')
 
-@app.route('/admin-dash', methods = ['GET'])
+@app.route('/dashboard/admin', methods = ['GET'])
 def admin_dash():
+
+    ''' This is the admin dashboard route. '''
     if session.get('role') != 'admin':
         return redirect(url_for('home'))
     admin = logged_in()
@@ -103,7 +105,7 @@ def admin_dash():
     bookings = Booking.query.all()
 
     treks = Trek.query.limit(5).all()
-    pending_staff = User.query.filter_by(role = 'staff', status = 'Pending').limit(5).all()
+    pending_staff = User.query.filter(User.role == 'staff', User.status.in_(['Pending', 'Rejected'])).limit(5).all()
     request_count = User.query.filter_by(role = 'staff', status = 'Pending').count()
 
     search_query = request.args.get('query', '').strip()
@@ -121,25 +123,60 @@ def admin_dash():
                            all_treks = all_treks, trekkers = trekkers, bookings = bookings, pending_staff = pending_staff,
                            treks_found = search_result_treks, users_found = search_result_users, query = search_query)
 
-@app.route('/admin-dash/approve-staff/<int:staff_id>', methods = ['POST'])
+
+@app.route('/dashboard/admin/guides', methods = ['GET', 'POST'])
+def guides():
+
+    '''This route is of guides table for the admin'''
+    if session.get('role') != 'admin':
+        return redirect(url_for('home'))
+
+    admin = User.query.get(session.get('user_id'))
+    guides = User.query.filter_by(role = 'staff')
+    query = request.args.get('query')
+    search_results = []
+    if query:
+        like = f'%{query}%'
+        search_results = User.query.filter(User.role == 'staff', or_(User.f_name.like(like), User.l_name.like(like),
+                                               User.status.like(like))).all()
+    return render_template('admin-guides.html', user =admin, guides = guides, results = search_results, query = query)
+
+@app.route('/dashboard/admin/trekkers', methods = ['GET', 'POST'])
+def trekkers():
+
+    '''This route is of guides table for the admin'''
+    if session.get('role') != 'admin':
+        return redirect(url_for('home'))
+
+    admin = User.query.get(session.get('user_id'))
+    trekkers = User.query.filter_by(role = 'trekker')
+    query = request.args.get('query')
+    search_results = []
+    if query:
+        like = f'%{query}%'
+        search_results = User.query.filter(User.role == 'trekker', or_(User.f_name.like(like), User.l_name.like(like),
+                                               User.status.like(like))).all()
+    return render_template('admin-trekkers.html', user = admin, trekkers = trekkers, results = search_results, query = query)
+
+@app.route('/dashboard/admin/approve-staff/<int:staff_id>', methods = ['POST'])
 def approve_staff(staff_id):
     if session.get('role') != 'admin':
         return redirect(url_for('home'))
     guide = User.query.get(staff_id)
     guide.status = 'Approved'
     db.session.commit()
-    return redirect(url_for('admin_dash'))
+    return redirect(url_for('guides'))
 
-@app.route('/admin-dash/reject-staff/<int:staff_id>', methods = ['POST'])
+@app.route('/dashboard/admin/reject-staff/<int:staff_id>', methods = ['POST'])
 def reject_staff(staff_id):
     if session.get('role') != 'admin':
         return redirect(url_for('home'))
     guide = User.query.get(staff_id)
     guide.status = 'Rejected'
     db.session.commit()
-    return redirect(url_for('admin_dash'))
+    return redirect(url_for('guides'))
 
-@app.route('/admin-dash/blacklist/<int:user_id>', methods = ['POST'])
+@app.route('/dashboard/admin/blacklist/<int:user_id>', methods = ['POST'])
 def blacklist(user_id):
     if session.get('role') != 'admin':
         return redirect(url_for('home'))
@@ -147,9 +184,14 @@ def blacklist(user_id):
     user.status = 'Blacklisted'
     user.isBlackListed = True
     db.session.commit()
-    return redirect(url_for('admin_dash'))
+    if user.role == 'staff':
+        return redirect(url_for('guides'))
+    elif user.role == 'trekker':
+        return redirect(url_for('trekkers'))
+    else:
+        return redirect(url_for('admin_dash'))
 
-@app.route('/admin-dash/unblacklist/<int:user_id>', methods = ['POST'])
+@app.route('/dashboard/admin/unblacklist/<int:user_id>', methods = ['POST'])
 def unblacklist(user_id):
     if session.get('role') != 'admin':
         return redirect(url_for('home'))
@@ -157,7 +199,12 @@ def unblacklist(user_id):
     user.status = 'Approved'
     user.isBlackListed = False
     db.session.commit()
-    return redirect(url_for('admin_dash'))
+    if user.role == 'staff':
+        return redirect(url_for('guides'))
+    elif user.role == 'trekker':
+        return redirect(url_for('trekkers'))
+    else:
+        return redirect(url_for('admin_dash'))
     
 
 @app.route('/staff-dash', methods = ['GET', 'POST'])
@@ -173,3 +220,55 @@ def trekker_dash():
         return redirect(url_for('home'))
     trekker = logged_in()
     return render_template('user-dash.html', user = trekker)
+
+@app.route('/dashboard/bookings', methods = ['GET', 'POST'])
+def bookings():
+    if session.get('role') not in ['admin', 'trekker']:
+        return redirect(url_for('home'))
+
+    if session.get('role') == 'admin':
+        admin = User.query.get(session.get('user_id'))
+        bookings = Booking.query.all()
+        search_query = request.args.get('query', '').strip()
+        search_results = []
+        if search_query:
+            like = f'%{search_query}%'
+            search_results = Booking.query.join(Booking.trekker).join(Booking.trek).filter(
+                                                or_(User.f_name.like(like), User.user_name.like(like), 
+                                                    Trek.name.like(like))).all()
+        return render_template('admin-bookings.html', user = admin, bookings = bookings, results = search_results, 
+                               query = search_query)
+
+# ----------------------------- TREK OPERATIONS -----------------------------
+@app.route('/dashboard/treks', methods = ['GET', 'POST'])
+def treks():
+    user = User.query.get(session.get('user_id'))
+    if user.role not in ['admin', 'staff']:
+        return redirect(url_for('home'))
+
+    if user.role == 'admin':
+        treks = Trek.query.all()
+        admin = User.query.get(session.get('user_id'))
+        search_query = request.args.get('query', '').strip()
+        search_results = []
+        if search_query:
+            like = f'%{search_query}%'
+            search_results = Trek.query.filter(or_(Trek.name.like(like), Trek.difficulty.like(like),
+                                                    Trek.location.like(like), Trek.status.like(like))).all()
+
+        return render_template('admin-treks.html', user = admin, treks = treks, results = search_results, 
+                               query = search_query)
+
+    # elif user.role == 'staff':
+    #     treks = Trek.query.filter_by(guide_id = user.user_id).all()
+    #     search_query = request.args.get('query', '').strip()
+    #     search_results = []
+    #     if search_query:
+    #         like = f'%{search_query}%'
+    #         search_results = Trek.query.filter(or_(Trek.name.like(like), Trek.difficulty.like(like),
+    #                                                 Trek.location.like(like), Trek.status.like(like))).all()
+    #     return render_template('staff-treks.html', treks = treks, results = search_results)
+    
+    else:
+        session.clear()
+        return redirect(url_for('home'))
