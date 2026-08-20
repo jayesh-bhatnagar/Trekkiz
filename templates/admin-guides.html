@@ -1,0 +1,179 @@
+{% extends 'dash-base.html' %} 
+{% block title %}Trek Staff | Trekkiz{% endblock%} 
+{% block brand_name %}
+<a class="navbar-brand fw-bold fs-3 text-success align-items-center"
+  href="{{ url_for('admin_dash') }}">
+  Trekkiz</a>
+{% endblock %} 
+{% block search_bar %}
+<form action="{{ url_for('guides') }}" 
+  method="GET" role="search" class="d-flex align-items-center gap-2">
+  <input class="form-control" type="search" name="query" style="width: 350px"
+    placeholder="Search trek staff members ..." value="{{ request.args.get('query', '') }}"/>
+  <button class="btn btn-success" type="submit">Search</button>
+</form>
+{% endblock %} 
+{% block content %} 
+{% if query %}
+<!-- div tag for Search Results-->
+<div class="mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold text-dark mb-0">
+      Search Results for "<span class="text-success">{{ query }}</span>"
+    </h4>
+    <a href="{{ url_for('guides') }}" class="btn btn-sm btn-outline-secondary">
+      Clear Search
+    </a>
+  </div>
+
+  <!-- If No Results Found -->
+  {% if not results %}
+  <div class="card p-4 text-center border-0 shadow-sm bg-white rounded-3">
+    <p class="text-muted mb-0">No matching staff members found.</p>
+  </div>
+  {% endif %}
+
+  <!-- Matching Staff Table -->
+  {% if results %}
+  <div class="card border-0 shadow-sm rounded-3 mb-3">
+    <div class="card-header bg-white py-3 border-0">
+      <h5 class="fw-bold mb-0 text-dark">
+        Staff found ({{ results | length }})
+      </h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table mb-0 align-middle text-center">
+        <thead class="table-light">
+          <tr>
+            <th>User-Name</th>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Role</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in results %}
+          <tr>
+            <td>{{ user.user_name }}</td>
+            <td>{{ user.f_name }} {{ user.l_name }}</td>
+            <td>{{ user.phone_number }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+              {% if user.status == 'Pending' %}
+              <form action="{{ url_for('approve_staff', staff_id = user.user_id) }}"
+                method="POST" class="d-inline-block">
+                <input type="hidden" name="staff_id" value="{{ user.user_id }}"/>
+                <button type="submit" name="action" value="approve_staff" class="btn btn-sm btn-outline-success">
+                  Approve
+                </button>
+              </form>
+              {% endif %}
+              {% if not user.isBlackListed %}
+              <form action="{{ url_for('blacklist', user_id = user.user_id) }}" method="POST"
+                class="d-inline-block">
+                <input type="hidden" name="user_id" value="{{ user.user_id }}"/>
+                <button type="submit" name="action" value="blacklist"
+                  class="btn btn-sm btn-outline-danger">
+                  Blacklist
+                </button>
+              </form>
+              {% else %}
+              <form action="{{ url_for('unblacklist', user_id = user.user_id) }}"
+                method="POST" class="d-inline-block">
+                <input type="hidden" name="user_id" value="{{ user.user_id }}"/>
+                <button type="submit" name="action" value="Un-Blacklist" class="btn btn-sm btn-outline-info">
+                  Un-Blacklist
+                </button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+<div class="card border-0 shadow-sm min-vh-100">
+  <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+    <h5 class="card-title fw-bold mb-0" style="color: #157649">Trek Staff</h5>
+    <a href="{{ url_for('admin_dash') }}" class="btn btn-sm btn-outline-secondary">
+      Back To Dashboard
+    </a>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-hover align-middle text-center">
+      <thead class="table-light border-top-0">
+        <tr>
+          <th>User-Name</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Contact</th>
+          <th>Treks Assigned</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for guide in guides %}
+        <tr>
+          <td>
+            <div>{{ guide.user_name }}</div>
+          </td>
+          <td>
+            <div>{{ guide.f_name }}</div>
+          </td>
+          <td>
+            <div>{{ guide.l_name }}</div>
+          </td>
+          <td>
+            <div>{{ guide.phone_number }}</div>
+          </td>
+          <td>
+            <div>0</div>
+          </td>
+          <td>
+            {% if guide.status == 'Pending' or guide.status == 'Rejected' %}
+            <form action="{{ url_for('approve_staff', staff_id = guide.user_id) }}"
+              method="POST" class="d-inline-block">
+              <input type="hidden" name="staff_id" value="{{ guide.user_id }}"/>
+              <button type="submit" name="action" value="approve_staff"
+                class="btn btn-sm btn-success px-2 py-1 me-1">
+                Approve
+              </button>
+            </form>
+            <form action="{{ url_for('reject_staff', staff_id = guide.user_id) }}"
+              method="POST" class="d-inline-block">
+              <input type="hidden" name="staff_id" value="{{ guide.user_id }}"/>
+              <button type="submit" name="action" value="reject_staff"
+                class="btn btn-sm btn-danger {% if guide.status == 'Rejected' %}disabled{% endif %} px-2 py-1">
+                Reject
+              </button>
+            </form> 
+            {% elif not guide.isBlackListed %}
+            <form action="{{ url_for('blacklist', user_id = guide.user_id) }}"
+              method="POST" class="d-inline-block">
+              <input type="hidden" name="user_id" value="{{ guide.user_id }}" />
+              <button type="submit" name="action" value="blacklist" class="btn btn-sm btn-outline-danger">
+                Blacklist
+              </button>
+            </form>
+            {% else %}
+            <form action="{{ url_for('unblacklist', user_id = guide.user_id) }}" method="POST"
+              class="d-inline-block">
+              <input type="hidden" name="user_id" value="{{ guide.user_id }}" />
+              <button type="submit" name="action" value="Un-Blacklist" class="btn btn-sm btn-info">
+                Un-Blacklist
+              </button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
