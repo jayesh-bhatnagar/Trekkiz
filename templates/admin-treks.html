@@ -1,0 +1,192 @@
+{% extends 'dash-base.html' %} 
+{% block title %}Manage Treks | Trekkiz{%endblock%} 
+{% block brand_name %}
+<a class="navbar-brand fw-bold fs-3 text-success align-items-center"
+  href="{{ url_for('admin_dash') }}">
+  Trekkiz</a>
+{% endblock %} 
+{% block search_bar %}
+<form action="{{ url_for('treks') }}" method="GET" role="search"
+  class="d-flex align-items-center gap-2">
+  <input class="form-control" type="search" name="query" style="width: 350px"
+    placeholder="Search treks ..."
+    value="{{ request.args.get('query', '') }}"/>
+  <button class="btn btn-success" type="submit">Search</button>
+</form>
+{% endblock %} 
+{% block content %} 
+{% if query %}
+<!-- div tag for Search Results-->
+<div class="mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold text-dark mb-0">
+      Search Results for "<span class="text-success">{{ query }}</span>"
+    </h4>
+    <a href="{{ url_for('treks') }}" class="btn btn-sm btn-outline-secondary">
+      Clear Search
+    </a>
+  </div>
+
+  <!-- If No Results Found -->
+  {% if not results %}
+  <div class="card p-4 text-center border-0 shadow-sm bg-white rounded-3">
+    <p class="text-muted mb-0">No matching treks found.</p>
+  </div>
+  {% endif %}
+
+  <!-- Matching Staff Table -->
+  {% if results %}
+  <div class="card border-0 shadow-sm rounded-3 mb-3">
+    <div class="card-header bg-white py-3 border-0">
+      <h5 class="fw-bold mb-0 text-dark">
+        Treks found ({{ results | length }})
+      </h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table align-middle text-center mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Trek Title</th>
+            <th>Difficulty</th>
+            <th>Trek Dates</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for trek in results %}
+          <tr>
+            <td>
+                <div class="fw-bold text-dark">{{ trek.name }}</div>
+                <small class="fw-semibold">
+                    <span>📍</span> {{ trek.location }}
+                </small>
+            </td>
+            <td>
+                <div class="badge {% if trek.difficulty == 'Hard' %} bg-danger 
+                {% elif trek.difficulty == 'Medium' %} bg-warning 
+                {% else %} bg-success {% endif %}">
+                    {{ trek.difficulty }}
+                </div>
+            </td>
+            <td>
+                <div>
+                    {{ trek.start_date.strftime('%B %d, %Y') }} - {{ trek.end_date.strftime('%B %d, %Y') }}
+                </div>
+            </td>
+            <td>
+                <div class="badge {% if trek.status == 'Open' %}bg-success
+                  {% elif trek.status == 'Closed' %}bg-warning
+                  {% elif trek.status == 'Started' %}bg-primary {% else %}bg-danger
+                  {% endif %}">
+                    {{ trek.status }}
+                </div>
+            </td>
+            <td>
+              <form action="#" 
+                method="POST" class="d-inline-block">
+                <input type="hidden" name="trek_id" value="{{ trek.trek_id }}"/>
+                <button type="submit" name="action" value="edit"
+                  class="btn btn-sm btn-outline-primary">
+                  Edit
+                </button>
+              </form>
+              <form action="#" 
+                method="POST" class="d-inline-block">
+                <input type="hidden" name="trek_id" value="{{ trek.trek_id }}"/>
+                <button type="submit" name="action" value="delete"
+                  class="btn btn-sm btn-outline-danger">
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+<div class="card border-0 shadow-sm min-vh-100">
+  <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+    <h5 class="card-title fw-bold mb-0" style="color: #157649">Created Treks</h5>
+    <div class="d-flex gap-2">
+    <!-- Primary CTA: Create Trek Button -->
+        <a href="#" class="btn btn-success btn-sm gap-2 px-3">
+            <i class="bi bi-plus-circle me-2"></i>Create New Trek
+        </a>
+    <!-- Secondary Button -->
+        <a href="{{ url_for('admin_dash') }}" class="btn btn-outline-secondary btn-sm">
+            Back To Dashboard</a>
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <table class="table align-middle text-center table-hover">
+      <thead class="table-light border-top-0">
+        <tr>
+          <th>Trek Title</th>
+          <th>Difficulty</th>
+          <th>Trek Dates</th>
+          <th>Total Slots</th>
+          <th>Available Slots</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for trek in treks %}
+        <tr>
+          <td>
+            <div class="fw-bold text-dark">{{ trek.name }}</div>
+            <small class="fw-semibold">
+                <span>📍</span> {{ trek.location }}
+            </small>
+          </td>
+          <td>
+            <div class="badge {% if trek.difficulty == 'Hard' %} bg-danger
+                {% elif trek.difficulty == 'Medium' %} bg-warning {% else %} bg-success {% endif %}">
+                {{ trek.difficulty }}</div>
+          </td>
+          <td>
+            <div>{{ trek.start_date.strftime("%B %d, %Y") }} - {{ trek.end_date.strftime("%B %d, %Y") }}</div>
+          </td>
+          <td>
+            <div>{{ trek.total_slots }}</div>
+          </td>          
+          <td>
+            <div>{{ trek.available_slots }} left</div>
+          </td>
+          <td>
+            <div class="badge {% if trek.status == 'Open' %}bg-success text-white 
+            {% elif trek.status == 'Closed' %}bg-warning text-dark 
+            {% elif trek.status == 'Started' %}bg-primary text-white{% else %}bg-danger {% endif %}">
+                {{ trek.status }}
+            </div>
+          </td>
+          <td>
+              <form action="#" 
+                method="POST" class="d-inline-block">
+                <input type="hidden" name="trek_id" value="{{ trek.trek_id }}"/>
+                <button type="submit" name="action" value="edit"
+                  class="btn btn-sm btn-primary">
+                  Edit
+                </button>
+              </form>
+              <form action="#" 
+                method="POST" class="d-inline-block">
+                <input type="hidden" name="trek_id" value="{{ trek.trek_id }}"/>
+                <button type="submit" name="action" value="delete"
+                  class="btn btn-sm btn-danger">
+                  Delete
+                </button>
+              </form>
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
