@@ -8,22 +8,26 @@
       </a>
     </li>
     <li class="nav-item">
-      <a href="#" class="nav-link fw-bold">
+      <a href="{{ url_for('treks') }}" 
+        class="nav-link fw-bold {{ 'active-link' if request.endpoint == 'treks' }}">
         <i class="bi bi-geo-alt-fill me-2"></i> Treks
       </a>
     </li>
     <li class="nav-item">
-      <a href="#" class="nav-link fw-bold">
+      <a href="{{ url_for('guides') }}" 
+      class="nav-link fw-bold {{ 'active-link' if request.endpoint == 'guides' }}">
         <i class="bi bi-person-fill me-2"></i> Staff
       </a>
     </li>
     <li class="nav-item">
-      <a href="#" class="nav-link fw-bold">
+      <a href="{{ url_for('trekkers') }}" 
+      class="nav-link fw-bold {{ 'active-link' if request.endpoint == 'trekkers' }}">
         <i class="bi bi-people-fill me-2"></i> Users
       </a>
     </li>
     <li class="nav-item">
-      <a href="#" class="nav-link fw-bold">
+      <a href="{{ url_for('bookings') }}" 
+      class="nav-link fw-bold {{ 'active-link' if request.endpoint == 'bookings' }}">
         <i class="bi bi-calendar-check me-2"></i> Bookings
       </a>
     </li>
