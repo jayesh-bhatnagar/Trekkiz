@@ -39,12 +39,12 @@
           <h5 class="fw-bold mb-0 text-dark">Treks ({{ treks_found | length }})</h5>
         </div>
         <div class="table-responsive">
-          <table class="table align-middle mb-0">
+          <table class="table align-middle text-center mb-0">
             <thead class="table-light">
               <tr>
-                <th>Trek Name</th>
-                <th>Location</th>
+                <th>Trek Title</th>
                 <th>Difficulty</th>
+                <th>Trek Dates</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
@@ -52,10 +52,30 @@
             <tbody>
               {% for trek in treks_found %}
                 <tr>
-                  <td>{{ trek.name }}</td>
-                  <td>{{ trek.location }}</td>
-                  <td>{{ trek.difficulty }}</td>
-                  <td>{{ trek.status }}</td>
+                  <td>
+                    <div class="fw-semibold text-dark">{{ trek.name }}</div>
+                    <small class="text-muted ">
+                      <span>📍</span> {{ trek.location }}
+                    </small>
+                  </td>
+                  <td>
+                    <div class="badge {% if trek.difficulty == 'Hard' %} bg-danger 
+                    {% elif trek.difficulty == 'Medium' %} bg-warning {% else %} bg-success {% endif %}">
+                      {{ trek.difficulty }}
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      {{ trek.start_date.strftime('%B %d, %Y') }} - {{ trek.end_date.strftime('%B %d, %Y') }}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="badge {% if trek.status == 'Open' %} bg-success
+                    {% elif trek.status == 'Started' %} bg-primary {% elif trek.status == 'Closed' %}
+                    bg-warning {% else %} bg-danger {% endif %}">
+                      {{ trek.status }}
+                    </div>
+                  </td>
                   <td>
                     <form action="#"
                       method="POST" class="d-inline-block">
@@ -87,7 +107,7 @@
           <h5 class="fw-bold mb-0 text-dark">Users found ({{ users_found | length }})</h5>
         </div>
         <div class="table-responsive">
-          <table class="table align-middle mb-0">
+          <table class="table align-middle text-center mb-0">
             <thead class="table-light">
               <tr>
                 <th>User-Name</th>
@@ -105,14 +125,15 @@
                   <td>{{ user.phone_number }}</td>
                   <td>{{ user.role }}</td>
                   <td>
+                    {% if user.status == 'Pending' %}
                     <form action="{{ url_for('approve_staff', staff_id = user.user_id) }}"
                       method="POST" class="d-inline-block">
                       <input type="hidden" name="staff_id" value="{{ user.user_id }}"/>
-                      <button type="submit" name="action" value="approve_staff" class="btn btn-sm btn-outline-success 
-                        {% if user.status == 'Approved' or user.status == 'Blacklisted' %}">
+                      <button type="submit" name="action" value="approve_staff" class="btn btn-sm btn-outline-success">
                         Approve
                       </button>
                     </form>
+                    {% endif %}
                     {% if not user.isBlackListed %}
                       <form action="{{ url_for('blacklist', user_id = user.user_id) }}"
                         method="POST", class="d-inline-block">
@@ -185,7 +206,7 @@
       <div class="card-body p-0">
         {% if pending_staff %}
         
-        <table class="table tabel-hover" style="text-align: center;">
+        <table class="table table-hover" style="text-align: center;">
           <thead class="table-light border-top-0">
             <tr>
               <th>Staff Details</th>
@@ -236,7 +257,7 @@
         {% endif %}
       </div>
       <div class="card-footer bg-white text-end">
-        <h6><a href="#" class="trek-link">View All Staff →</a></h6>
+        <h6><a href="{{ url_for('guides') }}" class="trek-link">View All Staff →</a></h6>
       </div>
     </div>
   </div>
@@ -245,7 +266,8 @@
       <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
         <h5 class="card-title mb-0 fw-bold" style="color: #157649;">Active Trek Catalogue</h5>
         <a href="#" role="button">
-          <button class="btn btn-medium btn-outline-success">Create New Treks</button>
+          <button class="btn btn-medium btn-outline-success">
+            <i class="bi bi-plus-circle me-2"></i>Add New Treks</button>
         </a>
       </div>
       <div class="card-body p-0">
@@ -274,11 +296,11 @@
                 </td>
                 <td><span class="fw-bold">{{ trek.available_slots or 'N/A' }}</span> left</td>
                 <td>
-                  <span class="badge {% if trek.trek_status == 'Open' %}bg-success text-white
-                  {% elif trek.trek_status == 'Closed' %}bg-warning text-dark
-                  {% elif trek.trek_status == 'Started' %}bg-primary text-white{% else %}bg-danger
+                  <span class="badge {% if trek.status == 'Open' %}bg-success text-white
+                  {% elif trek.status == 'Closed' %}bg-warning text-dark
+                  {% elif trek.status == 'Started' %}bg-primary text-white{% else %}bg-danger
                   {% endif %}">
-                    {{ trek.status or 'Open' }}</span>
+                    {{ trek.status  }}</span>
                 </td>
               </tr>
             {% endfor %}
@@ -288,11 +310,11 @@
         <div class="text-center py-5">
             <p class="text-muted mb-0">No treks have been added yet.</p>
         </div>
-        {% endif %}
-        <div class="card-footer bg-white text-end">
-            <h6><a href="#" class="trek-link">View All Treks →</a></h6>
-        </div>                    
+        {% endif %}                  
       </div>
+      <div class="card-footer bg-white text-end">
+          <h6><a href="{{ url_for('treks') }}" class="trek-link">View All Treks →</a></h6>
+      </div>        
     </div>
   </div>
 </div>
