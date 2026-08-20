@@ -1,0 +1,115 @@
+{% extends 'dash-base.html' %} 
+{% block title %}Bookings | Trekkiz{% endblock%} 
+{% block brand_name %}
+<a class="navbar-brand fw-bold fs-3 text-success align-items-center"
+  href="{{ url_for('admin_dash') }}">
+  Trekkiz</a>
+{% endblock %} 
+{% block search_bar %}
+<form action="{{ url_for('bookings') }}" 
+  method="GET" role="search" class="d-flex align-items-center gap-2">
+  <input class="form-control" type="search" name="query" style="width: 350px"
+    placeholder="Search bookings ....." value="{{ request.args.get('query', '') }}"/>
+  <button class="btn btn-success" type="submit">Search</button>
+</form>
+{% endblock %} 
+{% block content %} 
+{% if query %}
+<!-- div tag for Search Results-->
+<div class="mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold text-dark mb-0">
+      Search Results for "<span class="text-success">{{ query }}</span>"
+    </h4>
+    <a href="{{ url_for('bookings') }}" class="btn btn-sm btn-outline-secondary">
+      Clear Search
+    </a>
+  </div>
+
+  <!-- If No Results Found -->
+  {% if not results %}
+  <div class="card p-4 text-center border-0 shadow-sm bg-white rounded-3">
+    <p class="text-muted mb-0">No matching bookings found.</p>
+  </div>
+  {% endif %}
+
+  <!-- Matching Staff Table -->
+  {% if results %}
+  <div class="card border-0 shadow-sm rounded-3 mb-3">
+    <div class="card-header bg-white py-3 border-0">
+      <h5 class="fw-bold mb-0 text-dark">
+        Bookings found ({{ results | length }})
+      </h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table align-middle text-center mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Booking ID</th>
+            <th>Trek Name</th>
+            <th>Booked By</th>
+            <th>Booking Date</th>
+            <th>Booking Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in results %}
+          <tr>
+            <td>{{ booking.booking_id }}</td>
+            <td>{{ booking.trek.name }}</td>
+            <td>{{ booking.trekker.f_name }}</td>
+            <td>{{ booking.booking_date.strftime('%B %d, %Y') }}</td>
+            <td>{{ booking.status }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+<div class="card border-0 shadow-sm min-vh-100">
+  <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+    <h5 class="card-title fw-bold mb-0" style="color: #157649">Bookings</h5>
+    <a href="{{ url_for('admin_dash') }}" class="btn btn-sm btn-outline-secondary">
+      Back To Dashboard
+    </a>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-hover align-middle text-center">
+      <thead class="table-light border-top-0">
+        <tr>
+          <th>Booking ID</th>
+          <th>Booking Date</th>
+          <th>Trek Nmae</th>
+          <th>Booked By</th>
+          <th>Booking Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in bookings %}
+        <tr>
+          <td>
+            <div>{{ booking.booking_id }}</div>
+          </td>
+          <td>
+            <div>{{ booking.booking_date.strftime('%B %d, %Y') }}</div>
+          </td>
+          <td>
+            <div>{{ booking.trek.name }}</div>
+          </td>
+          <td>
+            <div>{{ booking.trekker.f_name }}</div>
+          </td>
+          <td>
+            <div class="badge rounded-pill {% if booking.status == 'Booked' %} bg-success
+            {% else %}bg-secondart {% endif %}">{{ booking.status }}</div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
