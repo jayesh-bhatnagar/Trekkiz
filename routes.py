@@ -144,12 +144,12 @@ def guides():
 @app.route('/dashboard/admin/trekkers', methods = ['GET', 'POST'])
 def trekkers():
 
-    '''This route is of guides table for the admin'''
+    '''This route is of trekkers table for the admin'''
     if session.get('role') != 'admin':
         return redirect(url_for('home'))
 
     admin = User.query.get(session.get('user_id'))
-    trekkers = User.query.filter_by(role = 'trekker')
+    trekkers = User.query.filter_by(role = 'trekker').all()
     query = request.args.get('query')
     search_results = []
     if query:
@@ -207,14 +207,14 @@ def unblacklist(user_id):
         return redirect(url_for('admin_dash'))
     
 
-@app.route('/staff-dash', methods = ['GET', 'POST'])
+@app.route('/dashboard/staff', methods = ['GET', 'POST'])
 def staff_dash():
     if session.get('role') != 'staff':
         return redirect(url_for('home'))
     guide = logged_in()
     return render_template('staff-dash.html', user = guide)
 
-@app.route('/trekker-dash', methods = ['GET', 'POST'])
+@app.route('/dashboard/trekker', methods = ['GET', 'POST'])
 def trekker_dash():
     if session.get('role') != 'trekker':
         return redirect(url_for('home'))
@@ -272,3 +272,25 @@ def treks():
     else:
         session.clear()
         return redirect(url_for('home'))
+
+@app.route('/dashboard/treks/addTrek', methods = ['GET', 'POST'])
+def newTrek():
+    if session.get('role') != 'admin':
+        return redirect(url_for('home'))
+    admin = User.query.get(session.get('user_id'))
+    if request.method == 'POST':
+        name = request.form.get('name')
+        location = request.form.get('location')
+        startDate = datetime.strptime(request.form.get('startDate'), '%Y-%m-%d')
+        endDate = datetime.strptime(request.form.get('endDate'), '%Y-%m-%d')
+        duration = (endDate - startDate).days
+        difficulty = request.form.get('difficulty')
+        totalSlots = request.form.get('slots')
+        availableSlots = totalSlots
+        status = request.form.get('status')
+        trek = Trek(name = name, location = location, start_date = startDate, end_date = endDate, difficulty = difficulty,
+                    duration = duration, total_slots = totalSlots, available_slots = availableSlots, status = status)
+        db.session.add(trek)
+        db.session.commit()
+        return redirect(url_for('treks'))
+    return render_template('add-trek.html', user = admin)
