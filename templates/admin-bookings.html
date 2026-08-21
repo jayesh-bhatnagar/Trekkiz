@@ -57,7 +57,7 @@
           <tr>
             <td>{{ booking.booking_id }}</td>
             <td>{{ booking.trek.name }}</td>
-            <td>{{ booking.trekker.f_name }}</td>
+            <td>{{ booking.trekker.user_name }}</td>
             <td>{{ booking.booking_date.strftime('%B %d, %Y') }}</td>
             <td>{{ booking.status }}</td>
           </tr>
@@ -100,7 +100,7 @@
             <div>{{ booking.trek.name }}</div>
           </td>
           <td>
-            <div>{{ booking.trekker.f_name }}</div>
+            <div>{{ booking.trekker.user_name }}</div>
           </td>
           <td>
             <div class="badge rounded-pill {% if booking.status == 'Booked' %} bg-success

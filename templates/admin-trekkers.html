@@ -123,7 +123,7 @@
             <div>{{ trekker.phone_number }}</div>
           </td>
           <td>
-            <div>{{ trekker.status }}</div>
+            <div>{{ trekker.bookings | length }}</div>
           </td>
           <td>
             {% if not trekker.isBlackListed %}

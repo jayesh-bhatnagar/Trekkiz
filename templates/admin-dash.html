@@ -265,7 +265,7 @@
     <div class="card border-0 shadow-sm h-100">
       <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
         <h5 class="card-title mb-0 fw-bold" style="color: #157649;">Active Trek Catalogue</h5>
-        <a href="#" role="button">
+        <a href="{{ url_for('newTrek') }}" role="button">
           <button class="btn btn-medium btn-outline-success">
             <i class="bi bi-plus-circle me-2"></i>Add New Treks</button>
         </a>
@@ -288,17 +288,17 @@
                   <div class="fw-semibold text-dark">{{ trek.name }}</div>
                 </td>
                 <td>
-                  <span class="badge {% if trek.difficulty == 'Easy' %}bg-info text-white
-                  {% elif trek.difficulty == 'Medium' %}bg-warning text-dark{% else %}bg-danger
+                  <span class="badge {% if trek.difficulty == 'Easy' %}bg-info 
+                  {% elif trek.difficulty == 'Medium' %}bg-warning {% else %}bg-danger
                   {% endif %}">
                     {{ trek.difficulty }}
                   </span>
                 </td>
                 <td><span class="fw-bold">{{ trek.available_slots or 'N/A' }}</span> left</td>
                 <td>
-                  <span class="badge {% if trek.status == 'Open' %}bg-success text-white
-                  {% elif trek.status == 'Closed' %}bg-warning text-dark
-                  {% elif trek.status == 'Started' %}bg-primary text-white{% else %}bg-danger
+                  <span class="badge {% if trek.status == 'Open' %} bg-success 
+                  {% elif trek.status == 'Closed' %} bg-warning
+                  {% elif trek.status == 'Started' %} bg-primary {% else %}bg-danger
                   {% endif %}">
                     {{ trek.status  }}</span>
                 </td>
